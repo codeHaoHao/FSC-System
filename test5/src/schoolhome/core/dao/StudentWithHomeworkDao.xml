@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.StudentWithHomeworkDao">
+	<resultMap type="StudentWithHomework" id="findStudentWithHomework">
+		<id property="id" column="id" />
+		<result property="student_id" column="student_id" />
+		<result property="H_ID" column="H_ID" />
+		<result property="grade" column="grade" />
+		<result property="isDone" column="isDone" />
+		<result property="content" column="content" />
+		<result property="wordFilePath" column="wordFilePath" />
+		<association property="student" column="student_id" javaType="Student"
+		select="schoolhome.core.dao.StudentDao.queryStudentById" />
+		<association property="homework" column="H_ID" javaType="Homework"
+		select="schoolhome.core.dao.HomeworkDao.queryHomeworkById" />
+	</resultMap>
+	<!-- 通过id查找数据 -->
+	<select id="queryStudentWithHomeworkById" parameterType="Integer" resultMap="findStudentWithHomework">
+		select *
+		from student_homework
+		where id = #{id}
+	</select>
+	<!-- 通过学生ID查找该学生的作业信息 -->
+	<select id="queryStudentWithHomeworkByStudentId" parameterType="Integer" resultMap="findStudentWithHomework">
+		select *
+		from student_homework
+		where student_id = #{id}
+	</select>
+	<!-- 通过student_id和H_ID查找该学生的作业信息 -->
+	<select id="queryStudentWithHomeworkByStudentIdAndH_ID" parameterType="Integer" resultMap="findStudentWithHomework">
+		select *
+		from student_homework
+		where student_id = #{student_id} and H_ID=#{H_ID}
+	</select>
+	<!-- 通过H_ID查找该H_ID的作业信息 -->
+	<select id="queryStudentWithHomeworkByH_ID" parameterType="Integer" resultMap="findStudentWithHomework">
+		select *
+		from student_homework
+		where H_ID=#{H_ID}
+	</select>
+	<!-- 添加数据 -->
+	<insert id="addStudentWithHomework" parameterType="StudentWithHomework">
+		insert into student_homework(id,student_id,H_ID,grade,isDone,content,wordFilePath)
+		values(null,#{student_id},#{H_ID},#{grade},#{isDone},#{content},#{wordFilePath})
+	</insert>
+	<!-- 查询所有数据 -->
+	<select id="queryAll" resultMap="findStudentWithHomework">
+		select * from student_homework
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findStudentWithHomework">
+		select * from student_homework limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from student_homework
+	</select>
+	
+	<!-- 更新数据信息 -->
+	<update id="updateStudentWithHomeworkInformation" parameterType="StudentWithHomework">
+		update student_homework
+		<set>
+			<if test="student_id !=null and student_id !=''">
+				student_id=#{student_id},
+			</if>
+			<if test="H_ID !=null and H_ID !=''">
+				H_ID=#{H_ID},
+			</if>
+			<if test="grade !=null and grade !=''">
+				grade=#{grade},
+			</if>
+			<if test="isDone !=null and isDone !=''">
+				isDone=#{isDone},
+			</if>
+			<if test="content !=null and content !=''">
+				content=#{content},
+			</if>
+			<if test="wordFilePath !=null and wordFilePath !=''">
+				wordFilePath=#{wordFilePath},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过student_id删除学生作业信息 -->
+	<delete id="deleteStudentWithHomeworkByStudentId" parameterType="Integer">
+		delete from student_homework where student_id = #{student_id}
+	</delete>
+	<!-- 通过H_ID删除学生作业信息 -->
+	<delete id="deleteStudentWithHomeworkByH_ID" parameterType="Integer">
+		delete from student_homework where H_ID = #{H_ID}
+	</delete>
+	<!-- 通过id删除 -->
+	<delete id="deleteStudentWithHomeworkById" parameterType="Integer">
+		delete from student_homework where id = #{id}
+	</delete>
+</mapper>

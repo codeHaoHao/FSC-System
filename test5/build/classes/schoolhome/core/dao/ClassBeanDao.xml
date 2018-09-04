@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.ClassBeanDao">
+	<!-- 通过用名字查询数据 -->
+	<select id="selectClassBeanByClassBeanName" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select *
+		from classBean
+		where classBeanName = #{classBeanName}
+	</select>
+	
+	<!-- 通过id查找数据 -->
+	<select id="queryClassBeanById" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select *
+		from classBean
+		where id = #{id}
+	</select>
+	
+	<resultMap type="ClassBean" id="findClassBeanWithCommodity">
+		<id property="id" column="id" />
+		<result property="classBeanName" column="classBeanName" />
+		
+		<collection property="commodityList" column="id" ofType="Commodity"
+		select="queryClassBeanWithCommodityById"></collection>
+		<collection property="studentList" column="id" ofType="Student"
+		select="schoolhome.core.dao.StudentDao.selectStudentByClassNum"/>
+		<collection property="classBeanWithCommodityList" column="id" ofType="ClassBeanWithCommodity"
+		select="schoolhome.core.dao.ClassBeanWithCommodityDao.queryClassBeanWithCommodityByClassBeanId"/>
+	</resultMap>
+	<!-- 根据老师id查找到老师教的班级信息 -->
+	<select id="queryClassBeanByTeacherId" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select * from classBean where id in (
+			select classBean_id from classbean_commodity_teacher where teacher_id=#{id}
+		)
+	</select>
+	<!-- 通过id查找班级里的Commodity -->
+	<select id="queryClassBeanWithCommodityById" parameterType="Integer" resultMap="schoolhome.core.dao.CommodityDao.findCommodityWithClassBeanTeacher">
+		select * from commodity where id in (
+		select commodity_id from classBean_commodity_teacher where classBean_id=#{id}
+		)
+	</select>
+	<!-- 添加数据 -->
+	<insert id="addClassBean" parameterType="classBean">
+		insert into classBean(id,classBeanName)
+		values(null,#{classBeanName})
+	</insert>
+	<!-- 查询所有数据 -->
+	<select id="queryAll" resultMap="findClassBeanWithCommodity">
+		select * from classBean
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select * from classBean limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from classBean
+	</select>
+	
+	<!-- 更新数据信息 -->
+	<update id="updateClassBeanInformation" parameterType="classBean">
+		update classBean
+		<set>
+			<if test="classBeanName !=null and classBeanName !=''">
+				classBeanName=#{classBeanName},
+			</if>
+
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过id删除 -->
+	<delete id="deleteClassBeanById" parameterType="Integer">
+		delete from classBean where id = #{id}
+	</delete>
+</mapper>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.StudentGradeDao">
+	<resultMap type="studentGrade" id="findStudentGrade">
+		<id property="id" column="id" />
+		<result property="student_id" column="student_id" />
+		<result property="commodity_id" column="commodity_id" />
+		<association property="student" column="student_id" javaType="student"
+		select="schoolhome.core.dao.StudentDao.queryStudentById" />
+		<association property="commodity" column="commodity_id" javaType="Commodity"
+		select="schoolhome.core.dao.CommodityDao.queryCommodityById" />
+	</resultMap>
+	<!-- 通过id查找数据 -->
+	<select id="queryStudentGradeById" parameterType="Integer" resultMap="findStudentGrade">
+		select *
+		from student_commodity
+		where id = #{id}
+	</select>
+	<!-- 通过id查找student_id为id的数据 -->
+	<select id="queryStudentGradeByStudentId" parameterType="Integer" resultMap="findStudentGrade">
+		select *
+		from student_commodity
+		where student_id = #{id}
+	</select>
+	<!-- 通过id查找student_id为id的数据 -->
+	<select id="queryStudentGradeByStudentIdAndCommodityId" parameterType="Integer" resultMap="findStudentGrade">
+		select *
+		from student_commodity
+		where student_id = #{student_id}
+		and commodity_id=#{commodity_id}
+	</select>
+	<!-- 通过id查找commodity_id为id的数据 -->
+	<select id="queryStudentGradeByCommodityId" parameterType="Integer" resultMap="findStudentGrade">
+		select *
+		from student_commodity
+		where commodity_id = #{id}
+	</select>
+	<!-- 添加数据 -->
+	<insert id="addStudentGrade" parameterType="StudentGrade">
+		insert into student_commodity(id,student_id,commodity_id,grade)
+		values(null,#{student_id},#{commodity_id},#{grade})
+	</insert>
+	<!-- 查询所有数据 -->
+	<select id="queryAll" resultMap="findStudentGrade">
+		select * from student_commodity
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findStudentGrade">
+		select * from student_commodity limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from student_commodity
+	</select>
+	
+	<!-- 更新数据信息 -->
+	<update id="updateStudentGradeInformation" parameterType="StudentGrade">
+		update student_commodity
+		<set>
+			<if test="student_id !=null and student_id !=''">
+				student_id=#{student_id},
+			</if>
+			<if test="commodity_id !=null and commodity_id !=''">
+				commodity_id=#{commodity_id},
+			</if>
+			<if test="grade !=null and grade !=''">
+				grade=#{grade},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过student_id删除学生的所有成绩 -->
+	<delete id="deleteStudentGradeByStudentId" parameterType="Integer">
+		delete from student_commodity where student_id = #{id}
+	</delete>
+	<!-- 通过commodity_id删除学生与该课程的相关联系 -->
+	<delete id="deleteStudentGradeByCommodityId" parameterType="Integer">
+		delete from student_commodity where commodity_id = #{id}
+	</delete>
+	<!-- 通过id删除student_commodity的一条信息 -->
+	<delete id="deleteStudentGradeById" parameterType="Integer">
+		delete from student_commodity where id = #{id}
+	</delete>
+
+	<delete id="deleteStudentGradeByCommodityIdAndStudentId" parameterType="Integer">
+		delete from student_commodity where student_id = #{student_id} and commodity_id = #{commodity_id}
+	</delete>
+</mapper>

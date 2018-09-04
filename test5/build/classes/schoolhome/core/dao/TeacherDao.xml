@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.TeacherDao">
+	<!-- 通过老师用户名查询老师 -->
+	<select id="selectTeacherByTeacherName" parameterType="String" resultMap="findTeacherWithClassBean">
+		select *
+		from teacher
+		where teacherName = #{teacherName}
+	</select>
+	<!-- 通过userName查询老师 -->
+	<select id="selectTeacherByTeacherUserName" parameterType="String" resultMap="findTeacherWithClassBean">
+		select *
+		from teacher
+		where userName = #{userName}
+	</select>
+	<!-- 通过id查找用户 -->
+	<select id="queryTeacherById" parameterType="Integer" resultMap="findTeacherWithClassBean">
+		select *
+		from teacher
+		where id = #{id}
+	</select>
+	<resultMap type="Teacher" id="findTeacherWithClassBean">
+		<id property="id" column="id" />
+		<result property="userName" column="userName" />
+		<result property="password" column="password" />
+		<result property="teacherName" column="teacherName" />
+		<result property="age" column="age" />
+		<result property="telephone" column="telephone" />
+		<result property="gender" column="gender" />
+		<collection property="classBeanList" column="id" ofType="ClassBean"
+		select="schoolhome.core.dao.ClassBeanDao.queryClassBeanByTeacherId">
+		</collection>
+		<collection property="classBeanWithCommodityList" column="id" ofType="ClassBeanWithCommodity"
+		select="schoolhome.core.dao.ClassBeanWithCommodityDao.queryClassBeanWithCommodityByTeacherId">
+		</collection>
+		<collection property="teacherCommodityHomeworkList" column="id" ofType="TeacherCommodityHomework"
+		select="schoolhome.core.dao.TeacherCommodityHomeworkDao.queryTeacherCommodityHomeworkByTeacherId">
+		</collection>
+	</resultMap>
+	
+	
+	<!-- 添加老师 -->
+	<insert id="addTeacher" parameterType="teacher">
+		insert into teacher(id,userName,password,teacherName,age,telephone,gender)
+		values(null,#{userName},#{password},#{teacherName},#{age},#{telephone},#{gender})
+	</insert>
+	<!-- 查询所有用户 -->
+	<select id="queryAll" resultMap="findTeacherWithClassBean">
+		select * from teacher
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findTeacherWithClassBean">
+		select * from Teacher limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from teacher
+	</select>
+	
+	<!-- 更新用户信息 -->
+	<update id="updateTeacherInformation" parameterType="teacher">
+		update teacher
+		<set>
+			<if test="userName !=null and userName !=''">
+				userName=#{userName},
+			</if>
+			<if test="password !=null and password !=''">
+				password=#{password},
+			</if>
+			<if test="teacherName !=null and teacherName !=''">
+				teacherName=#{teacherName},
+			</if>
+			<if test="age !=null and age !=''">
+				age=#{age},
+			</if>
+			<if test="telephone !=null and telephone !=''">
+				telephone=#{telephone},
+			</if>
+			<if test="gender !=null and gender !=''">
+				gender=#{gender},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过id删除用户 -->
+	<delete id="deleteTeacherById" parameterType="Integer">
+		delete from teacher where id = #{id}
+	</delete>
+</mapper>

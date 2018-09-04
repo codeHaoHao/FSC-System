@@ -1,0 +1,70 @@
+
+.send-button {
+    margin-bottom: 20px;
+}
+
+.send-button input[type="submit"] {
+    width: 20%;
+    padding: 10px 0;
+    margin-top: 50px;
+    margin-left: 120px;
+    font-size: 16px;
+    font-weight: 100;
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid rgba(238, 238, 238, 0.41);
+    border-width: thin;
+    cursor: pointer;
+    outline: none;
+    transition:0.5s all;
+    -webkit-transition:0.5s all;
+    -moz-transition:0.5s all;
+    -o-transition:0.5s all;
+    -ms-transition:0.5s all;
+    text-decoration: none;
+}
+.send-button input[type="button"] {
+    width: 40%;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 100;
+    background-color: transparent;
+    color: #CCC;
+    border: 1px solid rgba(238, 238, 238, 0.41);
+    border-width: thin;
+    cursor: pointer;
+    outline: none;
+    transition:0.5s all;
+    -webkit-transition:0.5s all;
+    -moz-transition:0.5s all;
+    -o-transition:0.5s all;
+    -ms-transition:0.5s all;
+    text-decoration: none;
+}
+/*--w3layouts--*/
+/*--agileits--*/
+.send-button input[type="submit"]:hover {
+    background-color: #000;
+    border: 1px solid #FFF;
+    color: #FFF;
+    transition:0.5s all;
+    -webkit-transition:0.5s all;
+    -moz-transition:0.5s all;
+    -o-transition:0.5s all;
+    -ms-transition:0.5s all;
+    text-decoration: none;
+}
+.send-button input[type="button"]:hover {
+    background-color: #000;
+    border: 1px solid #FFF;
+    color: #FFF;
+    transition:0.5s all;
+    -webkit-transition:0.5s all;
+    -moz-transition:0.5s all;
+    -o-transition:0.5s all;
+    -ms-transition:0.5s all;
+    text-decoration: none;
+}
+
+
+/*--- Responsive Code ---*/

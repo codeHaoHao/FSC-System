@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.CategoryDao">
+	<!-- 通过categoryName查找category信息 -->
+	<select id="selectCategoryByCategoryName" parameterType="String" resultType="category">
+		select * from category where categoryName=#{categoryName}
+	</select>
+	<!-- 通过id来查找category信息 -->
+	<select id="queryCategoryById" parameterType="Integer" resultType="category">
+		select * from category where id = #{id}
+	</select>
+	<!-- 添加category -->
+	<insert id="addCategory" parameterType="category">
+		insert into category(id,categoryName,description,sort)
+		values(null,#{categoryName},#{description},#{sort})
+	</insert>
+	<!-- 查询所有category -->
+	<select id="queryAll" resultType="category">
+		select * from category order by sort ASC
+	</select>
+	<!-- 根据begin，size分页查询category,同时sort升序 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultType="category">
+		select * from category order by sort ASC limit #{begin},#{size}
+	</select>
+	<!-- 查询category在数据表中的总行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from category
+	</select>
+	<!-- 通过id更新category信息 -->
+	<update id="updateCategoryInformation" parameterType="category">
+		update category
+		<set>
+			<if test="categoryName !=null and categoryName !=''">
+				categoryName=#{categoryName},
+			</if>
+			<if test="description !=null and description !=''">
+				description=#{description},
+			</if>
+			<if test="sort !=null and sort !=''">
+				sort=#{sort},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过id删除category -->
+	<delete id="deleteCategoryById" parameterType="Integer">
+		delete from category where id=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.ClassBeanWithCommodityDao">
+	<resultMap type="ClassBeanWithCommodity" id="findClassBeanWithCommodity">
+		<id property="id" column="id" />
+		<result property="classBean_id" column="classBean_id" />
+		<result property="commodity_id" column="commodity_id" />
+		<result property="teacher_id" column="teacher_id" />
+		<association property="classBean" column="classBean_id" javaType="ClassBean"
+		select="schoolhome.core.dao.ClassBeanDao.queryClassBeanById" />
+		<association property="commodity" column="commodity_id" javaType="Commodity"
+		select="schoolhome.core.dao.CommodityDao.queryCommodityById" />
+		<association property="teacher" column="teacher_id" javaType="Teacher"
+		select="schoolhome.core.dao.TeacherDao.queryTeacherById" />
+		<collection property="classScheduleList" column="id" ofType="ClassSchedule"
+		select="schoolhome.core.dao.ClassScheduleDao.queryClassScheduleByCCT_id" />
+	</resultMap>
+	<!-- 通过id查找数据 -->
+	<select id="queryClassBeanWithCommodityById" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select *
+		from classBean_commodity_teacher
+		where id = #{id}
+	</select>
+	<select id="queryClassBeanWithCommodityByAllId" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select *
+		from classBean_commodity_teacher
+		where classbean_id = #{classbean_id}
+		and teacher_id = #{teacher_id}
+		and commodity_id = #{commodity_id}
+	</select>
+	<select id="queryClassBeanWithCommodityByClassBeanId" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select *
+		from classBean_commodity_teacher
+		where classBean_id = #{id}
+	</select>
+	<select id="queryClassBeanWithCommodityByTeacherId" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select *
+		from classBean_commodity_teacher
+		where teacher_id = #{id}
+	</select>
+	<!-- 通过commodity_id查找teacher数据 -->
+	<select id="queryTeacherByCommodityId" parameterType="Integer" resultMap="schoolhome.core.dao.TeacherDao.findTeacherWithClassBean">
+		select *
+		from teacher
+		where id in(select teacher_id from classBean_commodity_teacher where commodity_id=#{id})
+	</select>
+	<!-- 通过commodity_id和classBean_id查找teacher数据 -->
+	<select id="queryTeacherByCommodityIdAndClassBeanId" parameterType="Integer" resultMap="schoolhome.core.dao.TeacherDao.findTeacherWithClassBean">
+		select *
+		from teacher
+		where id in(select teacher_id from classBean_commodity_teacher where commodity_id=#{commodity_id} and classBean_id=#{classBean_id})
+	</select>
+	<!-- 添加数据 -->
+	<insert id="addClassBeanWithCommodity" parameterType="classBeanWithCommodity">
+		insert into classBean_commodity_teacher(id,classBean_id,commodity_id,teacher_id)
+		values(null,#{classBean_id},#{commodity_id},#{teacher_id})
+	</insert>
+	<!-- 查询所有数据 -->
+	<select id="queryAll" resultMap="findClassBeanWithCommodity">
+		select * from classBean_commodity_teacher
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findClassBeanWithCommodity">
+		select * from classBean_commodity_teacher limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from classBean_commodity_teacher
+	</select>
+	
+	<!-- 更新数据信息 -->
+	<update id="updateClassBeanWithCommodityInformation" parameterType="classBeanWithCommodity">
+		update classBean_commodity_teacher
+		<set>
+			<if test="classBean_id !=null and classBean_id !=''">
+				classBean_id=#{classBean_id},
+			</if>
+			<if test="commodity_id !=null and commodity_id !=''">
+				commodity_id=#{commodity_id},
+			</if>
+			<if test="teacher_id !=null and teacher_id !=''">
+				teacher_id=#{teacher_id},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过classBean_id删除班级的课程 -->
+	<delete id="deleteClassBeanWithCommodityByClassBeanId" parameterType="Integer">
+		delete from classBean_commodity_teacher where classBean_id = #{id}
+	</delete>
+	<!-- 通过commodity_id删除班级的课程 -->
+	<delete id="deleteClassBeanWithCommodityByCommodityId" parameterType="Integer">
+		delete from classBean_commodity_teacher where commodity_id = #{id}
+	</delete>
+	<!-- 通过id删除 -->
+	<delete id="deleteClassBeanWithCommodityById" parameterType="Integer">
+		delete from classBean_commodity_teacher where id = #{id}
+	</delete>
+</mapper>

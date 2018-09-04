@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.ParentDao">
+	<!-- 通过用户名查询用户 -->
+	<select id="selectParentByParentName" parameterType="String" resultMap="findParentWithStudent">
+		select *
+		from parent
+		where parentName = #{parentName}
+	</select>
+	<!-- 通过userName查询用户 -->
+	<select id="selectParentByParentUserName" parameterType="String" resultMap="findParentWithStudent">
+		select *
+		from parent
+		where userName = #{userName}
+	</select>
+	<!-- 通过id查找用户 -->
+	<select id="queryParentById" parameterType="Integer" resultMap="findParentWithStudent">
+		select *
+		from parent
+		where id = #{id}
+	</select>
+	<!-- 通过id查找用户 -->
+	<select id="queryParentByStudentId" parameterType="Integer" resultMap="findParentWithStudent">
+		select *
+		from parent
+		where student_id = #{id}
+	</select>
+	<!-- 将Student对象映射到Parent对象的Student属性中 -->
+	<resultMap type="Parent" id="findParentWithStudent">
+		<id property="id" column="id" />
+		<result property="parentName" column="parentName" />
+		<result property="userName" column="userName" />
+		<result property="password" column="password" />
+		<result property="profession" column="profession" />
+		<result property="workspace" column="workspace" />
+		<result property="student_id" column="student_id" />
+		<result property="telephone" column="telephone" />
+		<result property="gender" column="gender" />
+		<association property="child" column="student_id" javaType="Student"
+		select="schoolhome.core.dao.StudentDao.queryStudentById" />
+	</resultMap>
+	
+	
+	<!-- 添加用户 -->
+	<insert id="addParent" parameterType="parent">
+		insert into parent(id,userName,password,parentName,profession,workspace,student_id,telephone)
+		values(null,#{userName},#{password},#{parentName},#{profession},#{workspace},#{student_id},#{telephone})
+	</insert>
+	<!-- 查询所有用户 -->
+	<select id="queryAll" resultMap="findParentWithStudent">
+		select * from parent
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findParentWithStudent">
+		select * from Parent limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from parent
+	</select>
+	
+	<!-- 更新用户信息 -->
+	<update id="updateParentInformation" parameterType="parent">
+		update parent
+		<set>
+			<if test="userName !=null and userName !=''">
+				userName=#{userName},
+			</if>
+			<if test="password !=null and password !=''">
+				password=#{password},
+			</if>
+			<if test="parentName !=null and parentName !=''">
+				parentName=#{parentName},
+			</if>
+			<if test="profession !=null and profession !=''">
+				profession=#{profession},
+			</if>
+			<if test="workspace !=null and workspace !=''">
+				workspace=#{workspace},
+			</if>
+			<if test="student_id !=null and student_id !=''">
+				student_id=#{student_id},
+			</if>
+			<if test="telephone !=null and telephone !=''">
+				telephone=#{telephone},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过id删除用户 -->
+	<delete id="deleteParentById" parameterType="Integer">
+		delete from parent where id = #{id}
+	</delete>
+</mapper>

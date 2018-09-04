@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.ClassScheduleDao">
+	<!-- 通过id查找ClassSchedule -->
+	<select id="queryClassScheduleById" parameterType="Integer" resultMap="findClassSchedule">
+		select * from class_schedule where id=#{id}
+	</select>
+	<select id="queryClassScheduleByCCT_id" parameterType="Integer" resultMap="findClassSchedule">
+		select * from class_schedule where CCT_id=#{CCT_id}
+	</select>
+	<select id="queryClassScheduleByCTT_idAndClassTimeClassLength" parameterType="Integer" resultMap="findClassSchedule">
+		select * 
+		from class_schedule 
+		where CCT_id=#{CCT_id}
+		and classTime=#{classTime}
+		and classLength=#{classLength}
+	</select>
+	<resultMap type="ClassSchedule" id="findClassSchedule">
+		<id property="id" column="id" />
+		<result property="CCT_id" column="CCT_id" />
+		<result property="classTime" column="classTime" />
+		<result property="classLength" column="classLength" />
+		<association property="classBeanWithCommodity" column="CCT_id" javaType="ClassBeanWithCommodity"
+		select="schoolhome.core.dao.ClassBeanWithCommodityDao.queryClassBeanWithCommodityById" />
+	</resultMap>
+
+	<!-- 添加ClassSchedule -->
+	<insert id="addClassSchedule" parameterType="classSchedule">
+		insert into class_schedule(id,CCT_id,classTime,classLength)
+		values(null,#{CCT_id},#{classTime},#{classLength})
+	</insert>
+	<!-- 查询所有class_schedule -->
+	<select id="queryAll" resultMap="findClassSchedule">
+		select * from class_schedule
+	</select>
+	<!-- 通过begin，size分页查询class_schedule -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findClassSchedule">
+		select * from class_schedule limit #{begin},#{size}
+	</select>
+	<!-- 查找ClassSchedule表的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from class_schedule
+	</select>
+	<!-- 通过id更新指定ClassSchedule -->
+	<update id="updateClassSchedule" parameterType="classSchedule">
+		update class_schedule
+		<set>
+			<if test="CCT_id !=null and CCT_id !=''">
+				CCT_id=#{CCT_id},
+			</if>
+			<if test="classTime !=null and classTime !=''">
+				classTime=#{classTime},
+			</if>
+			<if test="classLength !=null and classLength !=''">
+				classLength=#{classLength},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过id删除ClassSchedule -->
+	<delete id="deleteClassScheduleById" parameterType="Integer">
+		delete from class_schedule where id=#{id}
+	</delete>
+</mapper>

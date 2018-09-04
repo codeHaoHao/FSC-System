@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.TeacherCommodityHomeworkDao">
+	<resultMap type="TeacherCommodityHomework" id="findTeacherCommodityHomework">
+		<id property="id" column="id" />
+		<result property="teacher_id" column="teacher_id" />
+		<result property="commodity_id" column="commodity_id" />
+		<result property="H_ID" column="H_ID" />
+		<association property="homework" column="H_ID" javaType="Homework"
+		select="schoolhome.core.dao.HomeworkDao.queryHomeworkById" />
+		<association property="commodity" column="commodity_id" javaType="Commodity"
+		select="schoolhome.core.dao.CommodityDao.queryCommodityById" />
+		<association property="teacher" column="teacher_id" javaType="Teacher"
+		select="schoolhome.core.dao.TeacherDao.queryTeacherById" />
+	</resultMap>
+	<!-- 通过id查找数据 -->
+	<select id="queryTeacherCommodityHomeworkById" parameterType="Integer" resultMap="findTeacherCommodityHomework">
+		select *
+		from teacher_commodity_homework
+		where id = #{id}
+	</select>
+	<select id="queryTeacherCommodityHomeworkByTeacherId" parameterType="Integer" resultMap="findTeacherCommodityHomework">
+		select *
+		from teacher_commodity_homework
+		where teacher_id = #{id}
+	</select>
+	<!-- 通过commodity_id和teacher_id查找homework数据 -->
+	<select id="queryHomeworkByTeacherIdAndCommodityId" parameterType="Integer" resultMap="findTeacherCommodityHomework">
+		select *
+		from teacher_commodity_homework
+		where teacher_id=#{teacher_id} and commodity_id=#{commodity_id}
+	</select>
+	<!-- 添加数据 -->
+	<insert id="addTeacherCommodityHomework" parameterType="TeacherCommodityHomework">
+		insert into teacher_commodity_homework(id,H_ID,commodity_id,teacher_id)
+		values(null,#{H_ID},#{commodity_id},#{teacher_id})
+	</insert>
+	<!-- 查询所有数据 -->
+	<select id="queryAll" resultMap="findTeacherCommodityHomework">
+		select * from teacher_commodity_homework
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findTeacherCommodityHomework">
+		select * from teacher_commodity_homework limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from teacher_commodity_homework
+	</select>
+	
+	<!-- 更新数据信息 -->
+	<update id="updateTeacherCommodityHomeworkInformation" parameterType="TeacherCommodityHomework">
+		update teacher_commodity_homework
+		<set>
+			<if test="H_ID !=null and H_ID !=''">
+				classBean_id=#{classBean_id},
+			</if>
+			<if test="commodity_id !=null and commodity_id !=''">
+				commodity_id=#{commodity_id},
+			</if>
+			<if test="teacher_id !=null and teacher_id !=''">
+				teacher_id=#{teacher_id},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过teacher_id删除 -->
+	<delete id="deleteTeacherCommodityHomeworkByTeacherId" parameterType="Integer">
+		delete from teacher_commodity_homework where teacher_id = #{id}
+	</delete>
+	<!-- 通过commodity_id删除 -->
+	<delete id="deleteTeacherCommodityHomeworkByCommodityId" parameterType="Integer">
+		delete from teacher_commodity_homework where commodity_id = #{id}
+	</delete>
+	<!-- 通过commodity_id删除班级的课程 -->
+	<delete id="deleteTeacherCommodityHomeworkByH_ID" parameterType="Integer">
+		delete from teacher_commodity_homework where H_ID = #{id}
+	</delete>
+	<!-- 通过id删除 -->
+	<delete id="deleteTeacherCommodityHomeworkById" parameterType="Integer">
+		delete from teacher_commodity_homework where id = #{id}
+	</delete>
+</mapper>

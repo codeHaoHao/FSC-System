@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.CommodityDao">
+	<!-- 通过CommodityName查找Commodity -->
+	<select id="selectCommodityByCommodityName" parameterType="String" resultMap="findCommodityWithTeacher">
+		select * from commodity where commodityName=#{commodityName}
+	</select>
+	<!-- 通过id查找Commodity -->
+	<select id="queryCommodityById" parameterType="Integer" resultMap="findCommodityWithTeacher">
+		select * from commodity where id=#{id}
+	</select>
+	
+	<!-- 将Teacher对象映射到Commodity对象的teacher属性中
+		同时将该班级该课程的老师对象映射到classBeanTeacher中
+	 -->
+	<resultMap type="Commodity" id="findCommodityWithClassBeanTeacher">
+		<id property="id" column="id" />
+		<result property="commodityName" column="commodityName" />
+		<result property="categoryName" column="categoryName" />
+		<result property="description" column="description" />
+		<result property="createDate" column="createDate" />
+		<result property="photo" column="photo" />
+		<collection property="teacherList" column="id" ofType="Teacher"
+		select="schoolhome.core.dao.ClassBeanWithCommodityDao.queryTeacherByCommodityId" />
+	</resultMap>
+	<!-- 将Teacher对象映射到Commodity对象的teacher属性中 -->
+	<resultMap type="Commodity" id="findCommodityWithTeacher">
+		<id property="id" column="id" />
+		<result property="commodityName" column="commodityName" />
+		<result property="categoryName" column="categoryName" />
+		<result property="description" column="description" />
+		<result property="createDate" column="createDate" />
+		<result property="photo" column="photo" />
+		<collection property="teacherList" column="id" ofType="Teacher"
+		select="schoolhome.core.dao.ClassBeanWithCommodityDao.queryTeacherByCommodityId" />
+	</resultMap>
+	<!-- 添加Commodity -->
+	<insert id="addCommodity" parameterType="commodity">
+		insert into commodity(id,commodityName,categoryName,description,createDate,photo)
+		values(null,#{commodityName},#{categoryName},#{description},#{createDate},#{photo})
+	</insert>
+	<!-- 查询所有commodity -->
+	<select id="queryAll" resultMap="findCommodityWithTeacher">
+		select * from commodity
+	</select>
+	<!-- 通过begin，size分页查询commodity -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findCommodityWithTeacher">
+		select * from commodity limit #{begin},#{size}
+	</select>
+	<!-- 查找Commodity表的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from commodity
+	</select>
+	<!-- 通过id更新指定Commodity -->
+	<update id="updateCommodityInformation" parameterType="commodity">
+		update commodity
+		<set>
+			<if test="commodityName !=null and commodityName !=''">
+				commodityName=#{commodityName},
+			</if>
+			<if test="categoryName !=null and categoryName !=''">
+				categoryName=#{categoryName},
+			</if>
+			<if test="description !=null and description !=''">
+				description=#{description},
+			</if>
+			<if test="createDate !=null and createDate !=''">
+				createDate#{createDate},
+			</if>
+			<if test="photo !=null and photo !=''">
+				photo=#{photo},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过id删除Commodity -->
+	<delete id="deleteCommodityById" parameterType="Integer">
+		delete from commodity where id=#{id}
+	</delete>
+</mapper>

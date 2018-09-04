@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.UserDao">
+	<!-- 通过用户名查询用户 -->
+	<select id="selectUserByUserName" parameterType="String" resultType="user">
+		select *
+		from user
+		where userName = #{userName}
+	</select>
+	<!-- 通过id查找用户 -->
+	<select id="queryUserById" parameterType="Integer" resultType="user">
+		select *
+		from user
+		where id = #{id}
+	</select>
+	<!-- 添加用户 -->
+	<insert id="addUser" parameterType="user">
+		insert into user(id,userName,password,email,phone,createDate)
+		values(null,#{userName},#{password},#{email},#{phone},#{createDate})
+	</insert>
+	<!-- 查询所有用户 -->
+	<select id="queryAll" resultType="user">
+		select * from user
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultType="user">
+		select * from user limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from user
+	</select>
+	
+	<!-- 更新用户信息 -->
+	<update id="updateUserInformation" parameterType="user">
+		update user
+		<set>
+			<if test="userName !=null and userName !=''">
+				userName=#{userName},
+			</if>
+			<if test="password !=null and password !=''">
+				password=#{password},
+			</if>
+			<if test="email !=null and email !=''">
+				email=#{email},
+			</if>
+			<if test="phone !=null and phone !=''">
+				phone=#{phone},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过id删除用户 -->
+	<delete id="deleteUserById" parameterType="Integer">
+		delete from user where id = #{id}
+	</delete>
+</mapper>

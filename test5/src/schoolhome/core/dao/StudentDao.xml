@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.StudentDao">
+	<!-- 通过用户名查询用户 -->
+	<select id="selectStudentByStudentName" parameterType="String" resultMap="findStudentWithGrade">
+		select *
+		from student
+		where studentName = #{studentName}
+	</select>
+	<!-- 通过idCard查询学生 -->
+	<select id="selectStudentByStudentIdCard" parameterType="String" resultMap="findStudentWithGrade">
+		select *
+		from student
+		where idCard = #{idCard}
+	</select>
+	<!-- 通过班级ID查询学生 -->
+	<select id="selectStudentByClassNum" parameterType="Integer" resultMap="findStudentWithGrade">
+		select *
+		from student
+		where classNum = #{classNum}
+	</select>
+	<!-- 通过id查找用户 -->
+	<select id="queryStudentById" parameterType="Integer" resultMap="findStudentWithGrade">
+		select *
+		from student
+		where id = #{id}
+	</select>
+	
+	<resultMap type="Student" id="findStudentWithGrade">
+		<id property="id" column="id" />
+		<result property="studentName" column="studentName" />
+		<result property="idCard" column="idCard" />
+		<result property="password" column="password" />
+		<result property="classNum" column="classNum" />
+		<result property="idnumber" column="idnumber" />
+		<result property="gender" column="gender" />
+		<result property="enrollyear" column="enrollyear" />
+		<association property="classBean" column="classNum" javaType="ClassBean"
+		select="schoolhome.core.dao.ClassBeanDao.queryClassBeanById" />
+		<collection property="commodityList" column="id" ofType="Commodity"
+		select="queryStudentGradeByStudentId">
+		</collection>
+		<collection property="studentWithHomeworkList" column="id" ofType="StudentWithHomework"
+		select="schoolhome.core.dao.StudentWithHomeworkDao.queryStudentWithHomeworkByStudentId">
+		</collection>
+	</resultMap>
+	
+	<!-- 通过id查找学生的Commodity -->
+	<select id="queryStudentGradeByStudentId" parameterType="Integer" resultMap="findCommodityWithTeacher">
+		select commodity.*,grade from commodity,student_commodity where student_commodity.student_id=#{id} and commodity.id=student_commodity.commodity_id
+	</select>
+	<!-- 将Teacher对象映射到Commodity对象的teacher属性中 -->
+	<resultMap type="Commodity" id="findCommodityWithTeacher">
+		<id property="id" column="id" />
+		<result property="commodityName" column="commodityName" />
+		<result property="categoryName" column="categoryName" />
+		<result property="description" column="description" />
+		<result property="createDate" column="createDate" />
+		<result property="photo" column="photo" />
+		<result property="grade" column="grade" />
+		<collection property="teacherList" column="id" ofType="Teacher"
+		select="schoolhome.core.dao.ClassBeanWithCommodityDao.queryTeacherByCommodityId" />
+	</resultMap>
+	<!-- 添加用户 -->
+	<insert id="addStudent" parameterType="student">
+		insert into student(id,studentName,idCard,password,classNum)
+		values(null,#{studentName},#{idCard},#{password},#{classNum})
+	</insert>
+	<!-- 查询所有用户 -->
+	<select id="queryAll"  resultMap="findStudentWithGrade">
+		select * from student
+	</select>
+	<!-- 根据begin，size来返回用户list列表 -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultMap="findStudentWithGrade">
+		select * from Student limit #{begin},#{size}
+	</select>
+	<!-- 返回所有信息的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from student
+	</select>
+	
+	<!-- 更新用户信息 -->
+	<update id="updateStudentInformation" parameterType="student">
+		update student
+		<set>
+			<if test="studentName !=null and studentName !=''">
+				studentName=#{studentName},
+			</if>
+			<if test="idCard !=null and idCard !=''">
+				idCard=#{idCard},
+			</if>
+			<if test="password !=null and password !=''">
+				password=#{password},
+			</if>
+			<if test="classNum !=null and classNum !=''">
+				classNum=#{classNum},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<!-- 通过id删除用户 -->
+	<delete id="deleteStudentById" parameterType="Integer">
+		delete from student where id = #{id}
+	</delete>
+</mapper>

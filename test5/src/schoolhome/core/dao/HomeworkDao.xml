@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schoolhome.core.dao.HomeworkDao">
+	<!-- 通过id查找Homework -->
+	<select id="queryHomeworkById" parameterType="Integer" resultType="Homework">
+		select * from homework where H_ID=#{H_ID}
+	</select>
+	<!-- 通过H_name和H_content查找Homework -->
+	<select id="queryHomeworkByH_nameAndH_content" parameterType="String" resultType="Homework">
+		select * from homework where H_name=#{H_name} and H_content=#{H_content}
+	</select>
+	<!-- 添加Homework -->
+	<insert id="addHomework" parameterType="homework">
+		insert into homework(H_ID,H_name,H_content,H_startTime,H_endTime)
+		values(#{H_ID},#{H_name},#{H_content},#{H_startTime},#{H_endTime})
+	</insert>
+	<!-- 查询所有homework -->
+	<select id="queryAll" resultType="Homework">
+		select * from homework
+	</select>
+	<!-- 通过begin，size分页查询homework -->
+	<select id="queryAllOrderPage" parameterType="Integer" resultType="Homework">
+		select * from homework limit #{begin},#{size}
+	</select>
+	<!-- 查找Homework表的行数 -->
+	<select id="queryCountOfRows" resultType="Integer">
+		select count(*) from homework
+	</select>
+	<!-- 通过id更新指定Homework -->
+	<update id="updateHomeworkInformation" parameterType="homework">
+		update homework
+		<set>
+			<if test="H_name !=null and H_name !=''">
+				H_name=#{H_name},
+			</if>
+			<if test="H_content !=null and H_content !=''">
+				H_content=#{H_content},
+			</if>
+			<if test="H_startTime !=null ">
+				H_startTime=#{H_startTime},
+			</if>
+			<if test="H_endTime !=null ">
+				H_endTime=#{H_endTime},
+			</if>
+		</set>
+		where H_ID=#{H_ID}
+	</update>
+	<!-- 通过id删除Homework -->
+	<delete id="deleteHomeworkById" parameterType="Integer">
+		delete from homework where H_ID=#{H_ID}
+	</delete>
+</mapper>

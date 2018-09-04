@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- 配置别名 -->
+<typeAliases>
+	<package name="schoolhome.core.po"/>
+</typeAliases>
+<mappers>
+	<mapper resource="schoolhome/core/dao/UserDao.xml"/>
+	<mapper resource="schoolhome/core/dao/CategoryDao.xml"/>
+	<mapper resource="schoolhome/core/dao/CommodityDao.xml"/>
+	<mapper resource="schoolhome/core/dao/StudentDao.xml"/>
+	<mapper resource="schoolhome/core/dao/ClassBeanDao.xml"/>
+	<mapper resource="schoolhome/core/dao/ClassBeanWithCommodityDao.xml"/>
+	<mapper resource="schoolhome/core/dao/StudentGradeDao.xml"/>
+	<mapper resource="schoolhome/core/dao/ParentDao.xml"/>
+	<mapper resource="schoolhome/core/dao/TeacherDao.xml"/>
+	<mapper resource="schoolhome/core/dao/HomeworkDao.xml"/>
+	<mapper resource="schoolhome/core/dao/StudentWithHomeworkDao.xml"/>
+	<mapper resource="schoolhome/core/dao/TeacherCommodityHomeworkDao.xml"/>
+</mappers>
+</configuration>
